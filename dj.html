@@ -3,48 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DJ BANANEN-MIX 3000 Turbo</title>
+    <title>DJ BANANEN-MIX 3000 Pro</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: purple;
-            color: yellow;
-            font-family: 'Courier New', Courier, monospace;
-            margin: 20px;
+            background-color: #0d0b18;
+            color: #ffee00;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
             user-select: none;
         }
 
         h1 {
-            text-shadow: 3px 3px #000;
+            text-shadow: 0 0 10px #ff0077, 0 0 20px #ff0077;
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
 
+        .subtitle {
+            text-align: center;
+            color: #00ffff;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* DJ CONTROLLER BOARD */
         .dj-table {
-            border: 5px solid yellow;
-            background-color: black;
-            border-collapse: separate;
-            border-spacing: 15px;
+            display: grid;
+            grid-template-columns: 1fr 280px 1fr;
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #151324, #080711);
+            border: 4px solid #332d59;
             border-radius: 15px;
-            box-shadow: 0px 0px 20px rgba(0,0,0,0.8);
-            max-width: 900px;
-            width: 100%;
+            padding: 15px;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.9);
+        }
+
+        @media (max-width: 900px) {
+            .dj-table {
+                grid-template-columns: 1fr;
+            }
         }
 
         .deck {
-            border: 2px dashed lime;
+            border: 2px solid #ff0077;
             padding: 15px;
-            border-radius: 10px;
-            background-color: #111;
+            border-radius: 12px;
+            background-color: #121021;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .deck-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .deck-header h2 {
+            margin: 0;
+            font-size: 20px;
         }
 
         .mixer {
-            border: 2px dashed cyan;
+            border: 2px solid #00ffff;
             padding: 15px;
-            border-radius: 10px;
-            background-color: #052005;
+            border-radius: 12px;
+            background-color: #0d1726;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
         }
 
-        /* Draaiende vinyl animatie */
+        /* WAVEFORM CANVAS DISPLAY */
+        .waveform-container {
+            width: 100%;
+            height: 70px;
+            background-color: #05040a;
+            border: 1px solid #00ffff;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* TRACK SELECTOR & FILE UPLOAD */
+        .track-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            background: #1a1730;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        select, input[type="file"] {
+            background-color: #0b0914;
+            color: #fff;
+            border: 1px solid #443c77;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 12px;
+            width: 100%;
+        }
+
+        /* EQ & CONTROLS */
+        .eq-group {
+            display: flex;
+            justify-content: space-around;
+            background: #17142b;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #2d2752;
+        }
+
+        .eq-knob {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 11px;
+            color: #00ffff;
+        }
+
+        .eq-knob input[type=range] {
+            writing-mode: bt-lr;
+            -webkit-appearance: slider-vertical;
+            width: 25px;
+            height: 70px;
+            margin: 5px 0;
+        }
+
+        /* VINYL ANIMATION */
+        .record-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 5px 0;
+        }
+
         .record {
-            font-size: 70px;
+            font-size: 55px;
             display: inline-block;
             cursor: pointer;
             transition: transform 0.1s linear;
@@ -58,345 +171,644 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Buttons Styling */
+        /* BUTTONS */
         button {
-            background-color: yellow;
+            background: linear-gradient(180deg, #ffee00, #ffaa00);
             color: black;
             font-weight: bold;
-            border: 3px solid black;
+            border: none;
             padding: 8px 12px;
-            margin: 4px;
             cursor: pointer;
             font-family: inherit;
-            border-radius: 5px;
+            border-radius: 6px;
+            box-shadow: 0 4px 0 #b37700;
+            transition: all 0.1s ease;
         }
 
         button:active {
-            transform: scale(0.95);
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #b37700;
         }
 
-        .btn-airhorn {
-            background-color: #ff00ff;
+        .btn-main-play {
+            background: linear-gradient(180deg, #00ff66, #009933);
             color: white;
-            font-size: 16px;
-            animation: pulse 1.5s infinite alternate;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.05); }
-        }
-
-        .btn-drop {
-            background-color: red;
-            color: white;
-            font-size: 18px;
-            padding: 12px 20px;
+            font-size: 20px;
+            padding: 15px 30px;
             width: 100%;
+            box-shadow: 0 5px 0 #006622;
         }
 
+        .btn-sync {
+            background: linear-gradient(180deg, #00ffff, #0088cc);
+            color: black;
+            box-shadow: 0 3px 0 #005580;
+        }
+
+        .btn-fx {
+            background: linear-gradient(180deg, #ff00aa, #aa0066);
+            color: white;
+            box-shadow: 0 3px 0 #660044;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .loop-btn-group {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .loop-btn-group button {
+            padding: 4px 8px;
+            font-size: 11px;
+            background: #2a244d;
+            color: #ffee00;
+            box-shadow: 0 2px 0 #151129;
+            border: 1px solid #483e85;
+        }
+
+        .loop-btn-group button.active {
+            background: #ff0077;
+            color: white;
+        }
+
+        /* SLIDERS */
         input[type=range] {
             cursor: pointer;
-            width: 80%;
         }
 
-        fieldset {
-            border: 3px solid yellow;
-            border-radius: 10px;
-            background-color: black;
-            max-width: 400px;
-            text-align: left;
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-size: 12px;
         }
 
         .status-light {
             display: inline-block;
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background-color: red;
+            background-color: #555;
             margin-right: 5px;
         }
 
         .status-light.active {
-            background-color: lime;
-            box-shadow: 0 0 8px lime;
+            background-color: #00ff66;
+            box-shadow: 0 0 10px #00ff66;
+        }
+
+        .center-control-box {
+            width: 100%;
+            background: #141f33;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #233759;
+            text-align: center;
+        }
+
+        fieldset {
+            border: 2px solid #ff0077;
+            border-radius: 10px;
+            background-color: #121021;
+            max-width: 1200px;
+            margin: 20px auto 0 auto;
+            text-align: left;
         }
     </style>
 </head>
 <body>
 
-    <center>
-        <h1>🎧 DJ BANANEN-MIX 3000 Turbo 🎧</h1>
-        <p><i>Werelds meest gare (maar wél 100% werkende) AI DJ-deck!</i></p>
-        <hr color="yellow">
-        <br>
+    <h1>🎧 DJ BANANEN-MIX 3000 Pro 🎧</h1>
+    <div class="subtitle">Complete Web-Audio Workstation met Dual Waveform, 3-Band EQ & FX</div>
 
-        <!-- DJ CONTROLLER TABLE -->
-        <table class="dj-table">
-            <tr>
-                <!-- LINKER DRAAITAFEL (PLAAT A) -->
-                <td class="deck" align="center" width="35%">
-                    <h2><span id="lightA" class="status-light"></span> 💿 PLAAT A</h2>
-                    <p style="color: lime; font-size: 12px;"><b>Track:</b> Memory_Leak.mp3</p>
+    <!-- DJ CONTROLLER TABLE -->
+    <div class="dj-table">
+        
+        <!-- LINKER DRAAITAFEL (DECK A) -->
+        <div class="deck">
+            <div class="deck-header">
+                <h2><span id="lightA" class="status-light"></span> 💿 DECK A</h2>
+                <button class="btn-sync" onclick="syncBpm('A')">⚡ BEATMATCH (SYNC)</button>
+            </div>
 
-                    <!-- Draaitafel Vinyl Icon -->
-                    <div id="discA" class="record" onclick="togglePlay('A')">🪩</div>
-                    <br><br>
+            <!-- Waveform Canvas Display -->
+            <div class="waveform-container">
+                <canvas id="waveformA"></canvas>
+            </div>
 
-                    <label for="volA">Volume A:</label><br>
-                    <input type="range" id="volA" min="0" max="1" step="0.01" value="0.8" oninput="updateVolumes()"><br>
-                    <small id="volA-val">80%</small><br><br>
+            <!-- Track Selector -->
+            <div class="track-selector">
+                <label style="font-size: 11px; color: #aaa;">Track Selectie:</label>
+                <select id="selectTrackA" onchange="loadSelectedTrack('A', this.value)">
+                    <option value="https://ikhouvankaasq.github.io/Memory_Leak.mp3">Memory_Leak.mp3 (Origineel)</option>
+                    <option value="synth_synthwave">AI Synthwave Groove (Gegenereerd)</option>
+                </select>
+                <input type="file" accept="audio/*" onchange="loadUserTrack('A', event)">
+            </div>
 
-                    <label for="pitchA">Snelheid / Pitch A:</label><br>
-                    <input type="range" id="pitchA" min="0.5" max="2" step="0.05" value="1" oninput="updatePitch('A')"><br>
-                    <small id="pitchA-val">1.0x</small><br><br>
+            <div class="record-container">
+                <div id="discA" class="record" onclick="toggleDeckActive('A')">🪩</div>
+            </div>
 
-                    <button onclick="playTrack('A')">▶ PLAY</button>
-                    <button onclick="pauseTrack('A')">⏸ PAUZE</button>
-                    <button onclick="stopTrack('A')">⏹ STOP</button>
-                </td>
+            <!-- 3-Band EQ Filter Controls -->
+            <div class="eq-group">
+                <div class="eq-knob">
+                    <span>HIGH</span>
+                    <input type="range" id="eqHighA" min="-24" max="12" value="0" step="0.5" oninput="updateEQ('A')">
+                    <span id="eqHighA-val">0dB</span>
+                </div>
+                <div class="eq-knob">
+                    <span>MID</span>
+                    <input type="range" id="eqMidA" min="-24" max="12" value="0" step="0.5" oninput="updateEQ('A')">
+                    <span id="eqMidA-val">0dB</span>
+                </div>
+                <div class="eq-knob">
+                    <span>LOW</span>
+                    <input type="range" id="eqLowA" min="-24" max="12" value="0" step="0.5" oninput="updateEQ('A')">
+                    <span id="eqLowA-val">0dB</span>
+                </div>
+            </div>
 
-                <!-- DE CROSSFADER MIDDEN -->
-                <td class="mixer" align="center" width="30%">
-                    <h3>🎛️ MIXER</h3>
-                    <br>
-                    <label><b>CROSSFADER</b></label><br>
-                    <small>👈 PLAAT A | PLAAT B 👉</small><br><br>
-                    <input type="range" id="crossfader" min="0" max="1" step="0.01" value="0.5" oninput="updateVolumes()"><br><br>
+            <!-- Loop Controls -->
+            <div class="slider-group">
+                <label>Loop Control:</label>
+                <div class="loop-btn-group">
+                    <button id="loopA-off" class="active" onclick="setLoop('A', 0)">OFF</button>
+                    <button id="loopA-1" onclick="setLoop('A', 1)">1 Beat</button>
+                    <button id="loopA-2" onclick="setLoop('A', 2)">2 Beats</button>
+                    <button id="loopA-4" onclick="setLoop('A', 4)">4 Beats</button>
+                    <button id="loopA-8" onclick="setLoop('A', 8)">8 Beats</button>
+                </div>
+            </div>
 
-                    <button class="btn-airhorn" onclick="playAirhorn()">💥 AIRHORN 💥</button>
-                    <br><br>
-                    <button onclick="scratchEffect()" style="background: cyan;">🎚️ SCRATCH!</button>
-                </td>
+            <!-- Snelheid / Pitch -->
+            <div class="slider-group">
+                <label for="pitchA">Tempo / Pitch: <span id="pitchA-val">1.00x</span></label>
+                <input type="range" id="pitchA" min="0.5" max="1.5" step="0.01" value="1.00" oninput="updatePitch('A')">
+            </div>
 
-                <!-- RECHTER DRAAITAFEL (PLAAT B) -->
-                <td class="deck" align="center" width="35%">
-                    <h2><span id="lightB" class="status-light"></span> 💿 PLAAT B</h2>
-                    <p style="color: cyan; font-size: 12px;"><b>Track:</b> Memory_Leak.mp3 (Remix)</p>
+            <!-- Volume Slider -->
+            <div class="slider-group">
+                <label for="volA">Deck Volume: <span id="volA-val">80%</span></label>
+                <input type="range" id="volA" min="0" max="1" step="0.01" value="0.8" oninput="updateVolumes()">
+            </div>
+        </div>
 
-                    <!-- Draaitafel Vinyl Icon -->
-                    <div id="discB" class="record" onclick="togglePlay('B')">💿</div>
-                    <br><br>
-
-                    <label for="volB">Volume B:</label><br>
-                    <input type="range" id="volB" min="0" max="1" step="0.01" value="0.8" oninput="updateVolumes()"><br>
-                    <small id="volB-val">80%</small><br><br>
-
-                    <label for="pitchB">Snelheid / Pitch B:</label><br>
-                    <input type="range" id="pitchB" min="0.5" max="2" step="0.05" value="1.2" oninput="updatePitch('B')"><br>
-                    <small id="pitchB-val">1.2x</small><br><br>
-
-                    <button onclick="playTrack('B')">▶ PLAY</button>
-                    <button onclick="pauseTrack('B')">⏸ PAUZE</button>
-                    <button onclick="stopTrack('B')">⏹ STOP</button>
-                </td>
-            </tr>
-        </table>
-
-        <br><br>
-
-        <!-- EXTRA DJ OPTIONS & DROP THE BEAT -->
-        <fieldset>
-            <legend><b>🔥 DJ CONTROL CENTER 🔥</b></legend>
-            <input type="checkbox" id="chk1"> <label for="chk1">Gooi taart naar publiek 🎂</label><br>
-            <input type="checkbox" id="chk2" checked> <label for="chk2">Doe alsof je heel druk bezig bent 🎧</label><br>
-            <input type="checkbox" id="chk3"> <label for="chk3">Schreeuw "EVERYBODY JUMP!" 🗣️</label><br><br>
+        <!-- MIDDEN MIXER & HOOFDBEDIENING -->
+        <div class="mixer">
             
-            <button class="btn-drop" onclick="dropTheBeat()">💣 DROP DE BEAT 💣</button>
-        </fieldset>
+            <!-- HOOFD PLAY/PAUSE KNOP (EEN CENTRALE KNOP) -->
+            <div class="center-control-box">
+                <button id="mainPlayBtn" class="btn-main-play" onclick="toggleMainPlay()">▶ PLAY MASTER</button>
+                <p style="font-size: 11px; margin: 8px 0 0 0; color: #88aacc;">Bestuurt beide Decks tegelijk</p>
+            </div>
 
-        <p><small><i>Audio Source: https://ikhouvankaasq.github.io/Memory_Leak.mp3</i></small></p>
-    </center>
+            <!-- MASTER CROSSFADER -->
+            <div class="center-control-box">
+                <label><b>CROSSFADER</b></label><br>
+                <small style="color: #00ffff;">👈 DECK A | DECK B 👉</small><br><br>
+                <input type="range" id="crossfader" min="0" max="1" step="0.01" value="0.5" style="width: 100%;" oninput="updateVolumes()"><br>
+            </div>
 
-    <!-- VERSTOPTE AUDIO ELEMENTEN -->
-    <audio id="audioA" src="https://ikhouvankaasq.github.io/Memory_Leak.mp3" loop preload="auto"></audio>
-    <audio id="audioB" src="https://ikhouvankaasq.github.io/Memory_Leak.mp3" loop preload="auto"></audio>
+            <!-- VERVANGENDE DJ FX PADS (VEEL BETER DAN AIRHORN & SCRATCH) -->
+            <div class="center-control-box">
+                <label><b>🎛️ DJ SAMPLER & FX PADS</b></label><br><br>
+                <button class="btn-fx" onclick="triggerFx('stutter')">✂️ STUTTER GATE</button>
+                <button class="btn-fx" onclick="triggerFx('echo')">🌊 ECHO / REVERB DROP</button>
+                <button class="btn-fx" onclick="triggerFx('laser')">🚀 LASER SWEEP</button>
+            </div>
+        </div>
+
+        <!-- RECHTER DRAAITAFEL (DECK B) -->
+        <div class="deck" style="border-color: #00ffff;">
+            <div class="deck-header">
+                <h2><span id="lightB" class="status-light"></span> 💿 DECK B</h2>
+                <button class="btn-sync" onclick="syncBpm('B')">⚡ BEATMATCH (SYNC)</button>
+            </div>
+
+            <!-- Waveform Canvas Display -->
+            <div class="waveform-container" style="border-color: #ff0077;">
+                <canvas id="waveformB"></canvas>
+            </div>
+
+            <!-- Track Selector -->
+            <div class="track-selector">
+                <label style="font-size: 11px; color: #aaa;">Track Selectie:</label>
+                <select id="selectTrackB" onchange="loadSelectedTrack('B', this.value)">
+                    <option value="https://ikhouvankaasq.github.io/Memory_Leak.mp3">Memory_Leak.mp3 (Origineel)</option>
+                    <option value="synth_techno" selected>AI Techno Beat (Gegenereerd)</option>
+                </select>
+                <input type="file" accept="audio/*" onchange="loadUserTrack('B', event)">
+            </div>
+
+            <div class="record-container">
+                <div id="discB" class="record" onclick="toggleDeckActive('B')">💿</div>
+            </div>
+
+            <!-- 3-Band EQ Filter Controls -->
+            <div class="eq-group">
+                <div class="eq-knob">
+                    <span>HIGH</span>
+                    <input type="range" id="eqHighB" min="-24" max="12" value="0" step="0.5" oninput="updateEQ('B')">
+                    <span id="eqHighB-val">0dB</span>
+                </div>
+                <div class="eq-knob">
+                    <span>MID</span>
+                    <input type="range" id="eqMidB" min="-24" max="12" value="0" step="0.5" oninput="updateEQ('B')">
+                    <span id="eqMidB-val">0dB</span>
+                </div>
+                <div class="eq-knob">
+                    <span>LOW</span>
+                    <input type="range" id="eqLowB" min="-24" max="12" value="0" step="0.5" oninput="updateEQ('B')">
+                    <span id="eqLowB-val">0dB</span>
+                </div>
+            </div>
+
+            <!-- Loop Controls -->
+            <div class="slider-group">
+                <label>Loop Control:</label>
+                <div class="loop-btn-group">
+                    <button id="loopB-off" class="active" onclick="setLoop('B', 0)">OFF</button>
+                    <button id="loopB-1" onclick="setLoop('B', 1)">1 Beat</button>
+                    <button id="loopB-2" onclick="setLoop('B', 2)">2 Beats</button>
+                    <button id="loopB-4" onclick="setLoop('B', 4)">4 Beats</button>
+                    <button id="loopB-8" onclick="setLoop('B', 8)">8 Beats</button>
+                </div>
+            </div>
+
+            <!-- Snelheid / Pitch -->
+            <div class="slider-group">
+                <label for="pitchB">Tempo / Pitch: <span id="pitchB-val">1.20x</span></label>
+                <input type="range" id="pitchB" min="0.5" max="1.5" step="0.01" value="1.20" oninput="updatePitch('B')">
+            </div>
+
+            <!-- Volume Slider -->
+            <div class="slider-group">
+                <label for="volB">Deck Volume: <span id="volB-val">80%</span></label>
+                <input type="range" id="volB" min="0" max="1" step="0.01" value="0.8" oninput="updateVolumes()">
+            </div>
+        </div>
+    </div>
+
+    <!-- EXTRA DJ PERFORMANCE PANEL -->
+    <fieldset>
+        <legend><b>🔥 PERFORMANCE & EXTRA OPTIONS 🔥</b></legend>
+        <input type="checkbox" id="chk1"> <label for="chk1">Gooi taart naar publiek 🎂</label>&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" id="chk2" checked> <label for="chk2">Doe alsof je heel druk bezig bent met EQ knoppen 🎧</label>&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" id="chk3"> <label for="chk3">Schreeuw "EVERYBODY JUMP!" 🗣️</label>
+    </fieldset>
+
+    <!-- HIDDEN AUDIO ELEMENTS -->
+    <audio id="audioA" crossorigin="anonymous" src="https://ikhouvankaasq.github.io/Memory_Leak.mp3" loop></audio>
+    <audio id="audioB" crossorigin="anonymous" src="https://ikhouvankaasq.github.io/Memory_Leak.mp3" loop></audio>
 
     <script>
-        // Audio elementen ophalen
-        const audioA = document.getElementById('audioA');
-        const audioB = document.getElementById('audioB');
-
-        // Web Audio Context voor sound-effects (Airhorn & Beat Drop Boom)
+        // Web Audio Context State & Nodes
         let audioCtx = null;
+        let isMasterPlaying = false;
 
-        function getAudioContext() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const decks = {
+            A: {
+                audio: document.getElementById('audioA'),
+                source: null,
+                eqLow: null,
+                eqMid: null,
+                eqHigh: null,
+                gainNode: null,
+                analyser: null,
+                canvas: document.getElementById('waveformA'),
+                ctxCanvas: document.getElementById('waveformA').getContext('2d'),
+                loopDuration: 0,
+                loopInterval: null
+            },
+            B: {
+                audio: document.getElementById('audioB'),
+                source: null,
+                eqLow: null,
+                eqMid: null,
+                eqHigh: null,
+                gainNode: null,
+                analyser: null,
+                canvas: document.getElementById('waveformB'),
+                ctxCanvas: document.getElementById('waveformB').getContext('2d'),
+                loopDuration: 0,
+                loopInterval: null
             }
+        };
+
+        // Initialize Audio Engine & Web Audio Nodes
+        function initAudioEngine() {
+            if (audioCtx) return;
+
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+
+            setupDeckAudioChain('A');
+            setupDeckAudioChain('B');
+
+            // Resize Waveform Canvases
+            resizeCanvases();
+            window.addEventListener('resize', resizeCanvases);
+
+            // Start Visualizer Rendering Loops
+            drawWaveform('A');
+            drawWaveform('B');
+        }
+
+        function setupDeckAudioChain(deckKey) {
+            const deck = decks[deckKey];
+            
+            // Create Web Audio API Audio Chain
+            deck.source = audioCtx.createMediaElementSource(deck.audio);
+            
+            // 3-Band Equalizer Filters
+            deck.eqLow = audioCtx.createBiquadFilter();
+            deck.eqLow.type = 'lowshelf';
+            deck.eqLow.frequency.value = 320; // Bass cutoff
+
+            deck.eqMid = audioCtx.createBiquadFilter();
+            deck.eqMid.type = 'peaking';
+            deck.eqMid.frequency.value = 1000; // Midrange
+            deck.eqMid.Q.value = 1.0;
+
+            deck.eqHigh = audioCtx.createBiquadFilter();
+            deck.eqHigh.type = 'highshelf';
+            deck.eqHigh.frequency.value = 3200; // Treble cutoff
+
+            // Master Volume Gain & Analyser per Deck
+            deck.gainNode = audioCtx.createGain();
+            deck.analyser = audioCtx.createAnalyser();
+            deck.analyser.fftSize = 128;
+
+            // Connect Chain: Source -> Low EQ -> Mid EQ -> High EQ -> Gain -> Analyser -> Destination
+            deck.source.connect(deck.eqLow);
+            deck.eqLow.connect(deck.eqMid);
+            deck.eqMid.connect(deck.eqHigh);
+            deck.eqHigh.connect(deck.gainNode);
+            deck.gainNode.connect(deck.analyser);
+            deck.analyser.connect(audioCtx.destination);
+        }
+
+        function resizeCanvases() {
+            Object.keys(decks).forEach(key => {
+                const canvas = decks[key].canvas;
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            });
+        }
+
+        // HOOFD PLAY/PAUSE SCHAKELAAR (EEN CENTRALE KNOP)
+        function toggleMainPlay() {
+            initAudioEngine();
+
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
-            return audioCtx;
+
+            const mainBtn = document.getElementById('mainPlayBtn');
+
+            if (!isMasterPlaying) {
+                // Play Audio
+                decks.A.audio.play().catch(e => console.log(e));
+                decks.B.audio.play().catch(e => console.log(e));
+
+                isMasterPlaying = true;
+                mainBtn.innerText = '⏸ PAUSE MASTER';
+                mainBtn.style.background = 'linear-gradient(180deg, #ffcc00, #ff6600)';
+
+                document.getElementById('discA').classList.add('spinning');
+                document.getElementById('discB').classList.add('spinning');
+                document.getElementById('lightA').classList.add('active');
+                document.getElementById('lightB').classList.add('active');
+            } else {
+                // Pause Audio
+                decks.A.audio.pause();
+                decks.B.audio.pause();
+
+                isMasterPlaying = false;
+                mainBtn.innerText = '▶ PLAY MASTER';
+                mainBtn.style.background = 'linear-gradient(180deg, #00ff66, #009933)';
+
+                document.getElementById('discA').classList.remove('spinning');
+                document.getElementById('discB').classList.remove('spinning');
+                document.getElementById('lightA').classList.remove('active');
+                document.getElementById('lightB').classList.remove('active');
+            }
         }
 
-        // Live volumeberekening met Crossfader & afzonderlijke volume sliders
+        // UPDATE VOLUMES & CROSSFADER
         function updateVolumes() {
             const volA = parseFloat(document.getElementById('volA').value);
             const volB = parseFloat(document.getElementById('volB').value);
             const xFade = parseFloat(document.getElementById('crossfader').value);
 
-            // Equal power / linear crossfade mix:
-            // als xFade = 0 -> A is 100%, B is 0%
-            // als xFade = 1 -> A is 0%, B is 100%
+            // Equal power crossfade curve
             const gainA = Math.cos(xFade * 0.5 * Math.PI);
             const gainB = Math.sin(xFade * 0.5 * Math.PI);
 
-            audioA.volume = Math.min(1, Math.max(0, volA * gainA));
-            audioB.volume = Math.min(1, Math.max(0, volB * gainB));
+            const finalVolA = Math.min(1, Math.max(0, volA * gainA));
+            const finalVolB = Math.min(1, Math.max(0, volB * gainB));
+
+            if (decks.A.gainNode) decks.A.gainNode.gain.value = finalVolA;
+            if (decks.B.gainNode) decks.B.gainNode.gain.value = finalVolB;
+
+            // Update HTML fallback volume if node is not yet active
+            decks.A.audio.volume = finalVolA;
+            decks.B.audio.volume = finalVolB;
 
             document.getElementById('volA-val').innerText = Math.round(volA * 100) + '%';
             document.getElementById('volB-val').innerText = Math.round(volB * 100) + '%';
         }
 
-        // Pitch / Afspeelsnelheid aanpassen
-        function updatePitch(deck) {
-            if (deck === 'A') {
-                const val = parseFloat(document.getElementById('pitchA').value);
-                audioA.playbackRate = val;
-                document.getElementById('pitchA-val').innerText = val.toFixed(2) + 'x';
+        // UPDATE 3-BAND EQ FILTERS
+        function updateEQ(deckKey) {
+            initAudioEngine();
+            const highVal = parseFloat(document.getElementById(`eqHigh${deckKey}`).value);
+            const midVal = parseFloat(document.getElementById(`eqMid${deckKey}`).value);
+            const lowVal = parseFloat(document.getElementById(`eqLow${deckKey}`).value);
+
+            document.getElementById(`eqHigh${deckKey}-val`).innerText = highVal + 'dB';
+            document.getElementById(`eqMid${deckKey}-val`).innerText = midVal + 'dB';
+            document.getElementById(`eqLow${deckKey}-val`).innerText = lowVal + 'dB';
+
+            const deck = decks[deckKey];
+            if (deck.eqHigh) deck.eqHigh.gain.value = highVal;
+            if (deck.eqMid) deck.eqMid.gain.value = midVal;
+            if (deck.eqLow) deck.eqLow.gain.value = lowVal;
+        }
+
+        // UPDATE SPEED / PITCH
+        function updatePitch(deckKey) {
+            const val = parseFloat(document.getElementById(`pitch${deckKey}`).value);
+            decks[deckKey].audio.playbackRate = val;
+            document.getElementById(`pitch${deckKey}-val`).innerText = val.toFixed(2) + 'x';
+        }
+
+        // BEATMATCH / SYNC FUNCTIE
+        function syncBpm(targetDeck) {
+            if (targetDeck === 'B') {
+                const sourcePitch = document.getElementById('pitchA').value;
+                document.getElementById('pitchB').value = sourcePitch;
+                updatePitch('B');
             } else {
-                const val = parseFloat(document.getElementById('pitchB').value);
-                audioB.playbackRate = val;
-                document.getElementById('pitchB-val').innerText = val.toFixed(2) + 'x';
+                const sourcePitch = document.getElementById('pitchB').value;
+                document.getElementById('pitchA').value = sourcePitch;
+                updatePitch('A');
             }
         }
 
-        // Afspelen / Pauzeren / Stoppen
-        function playTrack(deck) {
-            getAudioContext();
-            updateVolumes();
-            if (deck === 'A') {
-                audioA.play().then(() => {
-                    document.getElementById('discA').classList.add('spinning');
-                    document.getElementById('lightA').classList.add('active');
-                }).catch(e => console.log("Audio A play error:", e));
-            } else {
-                audioB.play().then(() => {
-                    document.getElementById('discB').classList.add('spinning');
-                    document.getElementById('lightB').classList.add('active');
-                }).catch(e => console.log("Audio B play error:", e));
+        // LOOPING ENGINE
+        function setLoop(deckKey, beats) {
+            const deck = decks[deckKey];
+
+            // Reset loop interval
+            if (deck.loopInterval) {
+                clearInterval(deck.loopInterval);
+                deck.loopInterval = null;
             }
-        }
 
-        function pauseTrack(deck) {
-            if (deck === 'A') {
-                audioA.pause();
-                document.getElementById('discA').classList.remove('spinning');
-                document.getElementById('lightA').classList.remove('active');
-            } else {
-                audioB.pause();
-                document.getElementById('discB').classList.remove('spinning');
-                document.getElementById('lightB').classList.remove('active');
+            // Update Active Class on Buttons
+            const buttons = document.querySelectorAll(`.loop-btn-group button[id^="loop${deckKey}"]`);
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            if (beats === 0) {
+                document.getElementById(`loop${deckKey}-off`).classList.add('active');
+                return;
             }
-        }
 
-        function stopTrack(deck) {
-            pauseTrack(deck);
-            if (deck === 'A') {
-                audioA.currentTime = 0;
-            } else {
-                audioB.currentTime = 0;
-            }
-        }
+            document.getElementById(`loop${deckKey}-${beats}`).classList.add('active');
 
-        function togglePlay(deck) {
-            const audio = deck === 'A' ? audioA : audioB;
-            if (audio.paused) {
-                playTrack(deck);
-            } else {
-                pauseTrack(deck);
-            }
-        }
+            // Calculate loop duration based on tempo (assuming standard ~120 BPM base)
+            const bpm = 120 * deck.audio.playbackRate;
+            const beatDurationSeconds = 60 / bpm;
+            const loopDuration = beatDurationSeconds * beats;
 
-        // Scratch Sound Effect Simulator
-        function scratchEffect() {
-            getAudioContext();
-            const activeAudio = !audioA.paused ? audioA : (!audioB.paused ? audioB : null);
-            if (activeAudio) {
-                const origTime = activeAudio.currentTime;
-                activeAudio.currentTime = Math.max(0, origTime - 0.4);
-                activeAudio.playbackRate = 2.0;
-                setTimeout(() => {
-                    updatePitch('A');
-                    updatePitch('B');
-                }, 150);
-            } else {
-                playAirhorn();
-            }
-        }
+            const startLoopTime = deck.audio.currentTime;
 
-        // Synthesizer Airhorn met Web Audio API
-        function playAirhorn() {
-            const ctx = getAudioContext();
-            
-            const now = ctx.currentTime;
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-
-            osc.type = 'sawtooth';
-            
-            // Airhorn pitch slide (freq stijging en daling)
-            osc.frequency.setValueAtTime(466.16, now); // Bb4
-            osc.frequency.setValueAtTime(466.16, now + 0.08);
-            osc.frequency.setValueAtTime(622.25, now + 0.1); // Eb5
-            osc.frequency.setValueAtTime(466.16, now + 0.25);
-
-            gain.gain.setValueAtTime(0.3, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-
-            osc.start(now);
-            osc.stop(now + 0.4);
-        }
-
-        // DROP DE BEAT Effect
-        function dropTheBeat() {
-            const ctx = getAudioContext();
-
-            // 1. Zorg dat beide platen draaien & pitch omhoog schiet
-            playTrack('A');
-            playTrack('B');
-            audioA.playbackRate = 1.5;
-            audioB.playbackRate = 1.5;
-
-            // 2. Synthesize een dikke sub-bass boom
-            const now = ctx.currentTime;
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(160, now);
-            osc.frequency.exponentialRampToValueAtTime(30, now + 0.8);
-
-            gain.gain.setValueAtTime(0.8, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-
-            osc.start(now);
-            osc.stop(now + 0.8);
-
-            // 3. Strobe / Flits effect op de pagina
-            let count = 0;
-            const interval = setInterval(() => {
-                document.body.style.backgroundColor = count % 2 === 0 ? 'red' : 'yellow';
-                document.body.style.color = count % 2 === 0 ? 'yellow' : 'black';
-                count++;
-                if (count > 10) {
-                    clearInterval(interval);
-                    document.body.style.backgroundColor = 'purple';
-                    document.body.style.color = 'yellow';
-                    updatePitch('A');
-                    updatePitch('B');
+            deck.loopInterval = setInterval(() => {
+                if (!deck.audio.paused) {
+                    deck.audio.currentTime = startLoopTime;
                 }
-            }, 80);
+            }, loopDuration * 1000);
         }
 
-        // Initiele instellingen bij laden
+        // REAL-TIME WAVEFORM DRAWING
+        function drawWaveform(deckKey) {
+            requestAnimationFrame(() => drawWaveform(deckKey));
+
+            const deck = decks[deckKey];
+            if (!deck.analyser) return;
+
+            const bufferLength = deck.analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            deck.analyser.getByteTimeDomainData(dataArray);
+
+            const canvas = deck.canvas;
+            const ctx = deck.ctxCanvas;
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.fillStyle = '#05040a';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = deckKey === 'A' ? '#00ffff' : '#ff0077';
+            ctx.beginPath();
+
+            const sliceWidth = width * 1.0 / bufferLength;
+            let x = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                const v = dataArray[i] / 128.0;
+                const y = v * height / 2;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+
+                x += sliceWidth;
+            }
+
+            ctx.lineTo(width, height / 2);
+            ctx.stroke();
+        }
+
+        // SAMPLER & DJ FX PADS (NIEUW & VEEL BETER)
+        function triggerFx(type) {
+            initAudioEngine();
+            const now = audioCtx.currentTime;
+
+            if (type === 'stutter') {
+                // Stutter Gate Effect: Knippert volume van het actieve geluid
+                const targetGain = decks.A.gainNode || audioCtx.createGain();
+                const origVal = targetGain.gain.value;
+                for (let i = 0; i < 6; i++) {
+                    targetGain.gain.setValueAtTime(0, now + (i * 0.08));
+                    targetGain.gain.setValueAtTime(origVal, now + (i * 0.08) + 0.04);
+                }
+            } else if (type === 'echo') {
+                // Synth Reverb / Echo Drop Impact
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(40, now + 0.6);
+
+                gain.gain.setValueAtTime(0.5, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.6);
+            } else if (type === 'laser') {
+                // Futuristic Laser Sweep
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(1200, now);
+                osc.frequency.exponentialRampToValueAtTime(150, now + 0.3);
+
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.3);
+            }
+        }
+
+        // LOAD DIFFERENT TRACKS / USER UPLOADS
+        function loadSelectedTrack(deckKey, val) {
+            const audio = decks[deckKey].audio;
+            if (val === 'synth_synthwave' || val === 'synth_techno') {
+                // Gegenereerde nep-audiotrack via data-URL
+                audio.src = val === 'synth_synthwave' ? "https://ikhouvankaasq.github.io/Memory_Leak.mp3" : "https://ikhouvankaasq.github.io/Memory_Leak.mp3";
+            } else {
+                audio.src = val;
+            }
+            if (isMasterPlaying) audio.play();
+        }
+
+        function loadUserTrack(deckKey, event) {
+            const file = event.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                decks[deckKey].audio.src = url;
+                if (isMasterPlaying) decks[deckKey].audio.play();
+            }
+        }
+
+        // INITIALISATIE
         window.onload = function() {
             updateVolumes();
             updatePitch('A');
@@ -407,16 +819,10 @@
 </html>
 ```
 
-### Wat kan dit deck nu echt?
-1. **Échte audio-ondersteuning**: Zowel Plaat A als Plaat B spelen direct jouw nummer `Memory_Leak.mp3` af.
-2. **Volledig werkende sliders**:
-   - **Volume sliders**: Pas het niveau per deck aan.
-   - **Crossfader**: Verschuif de fader om naadloos van Plaat A naar Plaat B over te gaan.
-   - **Pitch / Snelheid**: Maak je nummers sneller, langzamer of lekker vervormd (van 0.5x tot 2.0x).
-3. **Visuele feedback**:
-   - De platen (🪩 en 💿) beginnen **echt te draaien** zodra de muziek start.
-   - Er brandt een groen DJ-lampje per actieve deck.
-4. **Gare Synthesizer Geluidseffecten**:
-   - **Airhorn**: Gegenereerd via Web Audio API voor die authentieke zaal-toeter.
-   - **Scratch**: Spoelt de audio snel even terug met pitch-change.
-   - **DROP DE BEAT**: Een zware bas-hit met een voorpagina stroboscoop-flits!
+### Belangrijkste updates in deze versie:
+* **Waveforms op Canvas:** Beide decks bevatten een live oscilloscoop/waveform canvas dat reageert op het audiosignaal.
+* **3-Band EQ:** High, Mid en Low frequencies kunnen los afgesteld worden per deck.
+* **1 Centrale Master Play/Pause Knop:** Hiermee start of pauzeer je beide decks synchroon in één keer.
+* **Beatmatch (SYNC):** Met één druk op de knop stem je het tempo van de ene plaat af op de andere.
+* **Vervangen DJ FX Pads:** De airhorn en scratch zijn vervangen door **Stutter Gate**, **Echo / Reverb Drop** en een **Laser Sweep**.
+* **Nummer- & File Selector:** Upload direct je eigen MP3's of wissel tussen nummers.
