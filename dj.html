@@ -406,7 +406,7 @@
                 <button class="btn-loop" id="loop-btn-a" onclick="toggleLoop('a', 'custom')">LOOP OFF</button>
             </div>
 
-            <!-- DECK CONTROLS -->
+            <!-- DECK CONTROLS (LOSSE PAUSE/PLAY KNOPPEN PER DECK) -->
             <div class="deck-controls">
                 <div class="transport-btns">
                     <button class="btn-cdj btn-cue" onclick="cueTrack('a')">CUE</button>
@@ -422,11 +422,11 @@
             </div>
         </div>
 
-        <!-- MIXER (CENTRAL CONTROL & EQ) -->
+        <!-- MIXER (CENTRAL CONTROL & ROTARY EQ KNOBS) -->
         <div class="mixer">
             <div class="mixer-title">DJM-900 PRO MIXER</div>
 
-            <!-- EQ KNOBS SECTION -->
+            <!-- EQ DRAAIKNOPPEN HIER IN HET MIDDEN -->
             <div class="eq-channels">
                 <!-- DECK A EQ -->
                 <div class="eq-channel deck-a-eq">
@@ -547,7 +547,6 @@
     </div>
 
     <script>
-        // WEB AUDIO API ENGINE
         let audioCtx;
 
         class Deck {
@@ -563,7 +562,6 @@
                 this.audioBuffer = null;
                 this.peaks = [];
                 
-                // Audio Nodes
                 this.sourceNode = null;
                 this.gainNode = null;
                 this.eqHigh = null;
@@ -586,7 +584,6 @@
                 this.gainNode = audioCtx.createGain();
                 this.crossfadeGain = audioCtx.createGain();
 
-                // 3-Band Equalizer Filters
                 this.eqLow = audioCtx.createBiquadFilter();
                 this.eqLow.type = 'lowshelf';
                 this.eqLow.frequency.value = 320;
@@ -600,7 +597,6 @@
                 this.eqHigh.type = 'highshelf';
                 this.eqHigh.frequency.value = 3200;
 
-                // Connect Chain: Source -> EQ Low -> EQ Mid -> EQ High -> Trim Gain -> Crossfade Gain -> Destination
                 this.sourceNode.connect(this.eqLow);
                 this.eqLow.connect(this.eqMid);
                 this.eqMid.connect(this.eqHigh);
@@ -615,11 +611,8 @@
             b: new Deck('b')
         };
 
-        // Synthesize fallback audio for demo tracks
         function createSynthAudio(type) {
-            const canvas = document.createElement('canvas');
             const offlineCtx = new OfflineAudioContext(2, 44100 * 30, 44100);
-            
             const osc = offlineCtx.createOscillator();
             const gain = offlineCtx.createGain();
             
@@ -643,12 +636,10 @@
             });
         }
 
-        // Initialize Audio & Canvas setup
         window.addEventListener('load', () => {
             setupKnobs();
             resizeCanvases();
             
-            // Load initial tracks
             changeTrack('a', document.getElementById('select-a').value);
             changeTrack('b', document.getElementById('select-b').value);
             
@@ -663,7 +654,6 @@
             });
         }
 
-        // LOAD AND PRE-RENDER WAVEFORM
         async function changeTrack(deckId, url) {
             const deck = decks[deckId];
             if (deck.isPlaying) togglePlay(deckId);
@@ -675,7 +665,6 @@
             deck.audio.src = url;
             deck.audio.load();
 
-            // Fetch & Decode for Pre-rendered CDJ Waveform
             try {
                 const response = await fetch(url);
                 const arrayBuffer = await response.arrayBuffer();
@@ -683,14 +672,13 @@
                 deck.audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
                 generateWaveformPeaks(deck);
             } catch (e) {
-                console.log("Waveform pre-render loaded via fallback/audio stream.");
                 generateDummyPeaks(deck);
             }
         }
 
         function generateWaveformPeaks(deck) {
             const rawData = deck.audioBuffer.getChannelData(0);
-            const samples = 400; // Resolution
+            const samples = 400;
             const blockSize = Math.floor(rawData.length / samples);
             deck.peaks = [];
             for (let i = 0; i < samples; i++) {
@@ -717,7 +705,6 @@
             }
         }
 
-        // CDJ PLAY / PAUSE / CUE
         function togglePlay(deckId) {
             const deck = decks[deckId];
             deck.initAudioNode();
@@ -792,14 +779,12 @@
 
         function updateCrossfader(val) {
             const x = parseFloat(val);
-            // Constant power crossfade curve
             decks.a.initAudioNode();
             decks.b.initAudioNode();
             decks.a.crossfadeGain.gain.value = Math.cos(x * 0.5 * Math.PI);
             decks.b.crossfadeGain.gain.value = Math.sin(x * 0.5 * Math.PI);
         }
 
-        // ROTARY KNOB CONTROLS (MIXER EQ)
         function setupKnobs() {
             document.querySelectorAll('.rotary-knob').forEach(knob => {
                 let startY, startVal;
@@ -813,11 +798,9 @@
                         let newVal = Math.min(12, Math.max(-24, startVal + delta * 0.3));
                         knob.dataset.value = newVal;
 
-                        // Rotate indicator (-135deg to +135deg)
                         const deg = (newVal / 24) * 135;
                         knob.style.transform = `rotate(${deg}deg)`;
 
-                        // Apply EQ to Web Audio Node
                         const deckId = knob.dataset.deck;
                         const eqType = knob.dataset.eq;
                         const deck = decks[deckId];
@@ -839,7 +822,7 @@
             });
         }
 
-        // DRAW CDJ-3000 STYLE SCROLLING WAVEFORM
+        // DRAW SCROLLING WAVEFORM (CDJ-3000 LOOK-AHEAD)
         function drawWaveforms() {
             Object.values(decks).forEach(deck => {
                 const ctx = deck.ctx;
@@ -848,7 +831,6 @@
 
                 ctx.clearRect(0, 0, width, height);
 
-                // Draw background grid
                 ctx.strokeStyle = '#11151c';
                 ctx.lineWidth = 1;
                 for (let x = 0; x < width; x += 20) {
@@ -861,16 +843,14 @@
                 if (deck.audio.duration) {
                     const currentTime = deck.audio.currentTime;
                     const duration = deck.audio.duration;
-                    const playheadX = width * 0.3; // 30% position
+                    const playheadX = width * 0.3;
 
-                    // Format Time display
                     const mins = Math.floor(currentTime / 60);
                     const secs = Math.floor(currentTime % 60);
                     const ms = Math.floor((currentTime % 1) * 100);
                     document.getElementById(`time-${deck.id}`).innerText = 
                         `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}.${ms.toString().padStart(2, '0')}`;
 
-                    // Handle Loop logic
                     if (deck.loopActive) {
                         const loopDuration = (60 / (deck.baseBpm * deck.currentPitch)) * deck.loopBeats;
                         if (!deck.loopStart) deck.loopStart = currentTime;
@@ -881,7 +861,6 @@
                         deck.loopStart = null;
                     }
 
-                    // Render scrolling waveform bars (CDJ-3000 style)
                     if (deck.peaks.length > 0) {
                         const totalPeaks = deck.peaks.length;
                         const progress = currentTime / duration;
@@ -890,7 +869,6 @@
                         const spacing = 1;
 
                         for (let i = 0; i < totalPeaks; i++) {
-                            // Calculate X relative to playhead line
                             const x = playheadX + (i - currentPeakIndex) * (barWidth + spacing);
 
                             if (x > -10 && x < width + 10) {
@@ -908,7 +886,6 @@
             requestAnimationFrame(drawWaveforms);
         }
 
-        // DJ FX PADS GENERATOR
         function triggerFX(type) {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             
@@ -935,7 +912,6 @@
             }
         }
 
-        // Helper function for WAV Audio Buffer Encoding
         function audioBufferToWav(buffer) {
             let numOfChan = buffer.numberOfChannels,
                 length = buffer.length * numOfChan * 2 + 44,
