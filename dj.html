@@ -2,118 +2,421 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>DJ BANANEN-MIX 3000 (VERY REAL DJ SETUP)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DJ BANANEN-MIX 3000 Turbo</title>
+    <style>
+        body {
+            background-color: purple;
+            color: yellow;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 20px;
+            user-select: none;
+        }
+
+        h1 {
+            text-shadow: 3px 3px #000;
+        }
+
+        .dj-table {
+            border: 5px solid yellow;
+            background-color: black;
+            border-collapse: separate;
+            border-spacing: 15px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.8);
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .deck {
+            border: 2px dashed lime;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #111;
+        }
+
+        .mixer {
+            border: 2px dashed cyan;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #052005;
+        }
+
+        /* Draaiende vinyl animatie */
+        .record {
+            font-size: 70px;
+            display: inline-block;
+            cursor: pointer;
+            transition: transform 0.1s linear;
+        }
+
+        .spinning {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Buttons Styling */
+        button {
+            background-color: yellow;
+            color: black;
+            font-weight: bold;
+            border: 3px solid black;
+            padding: 8px 12px;
+            margin: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            border-radius: 5px;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .btn-airhorn {
+            background-color: #ff00ff;
+            color: white;
+            font-size: 16px;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        .btn-drop {
+            background-color: red;
+            color: white;
+            font-size: 18px;
+            padding: 12px 20px;
+            width: 100%;
+        }
+
+        input[type=range] {
+            cursor: pointer;
+            width: 80%;
+        }
+
+        fieldset {
+            border: 3px solid yellow;
+            border-radius: 10px;
+            background-color: black;
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .status-light {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: red;
+            margin-right: 5px;
+        }
+
+        .status-light.active {
+            background-color: lime;
+            box-shadow: 0 0 8px lime;
+        }
+    </style>
 </head>
-<body bgcolor="purple" text="yellow">
+<body>
 
     <center>
         <h1>🎧 DJ BANANEN-MIX 3000 Turbo 🎧</h1>
-        <p><i>Werelds beste (en 100% gare) AI DJ-deck!</i></p>
-        <hr>
+        <p><i>Werelds meest gare (maar wél 100% werkende) AI DJ-deck!</i></p>
+        <hr color="yellow">
+        <br>
 
-        <table border="5" cellpadding="20" bgcolor="black">
+        <!-- DJ CONTROLLER TABLE -->
+        <table class="dj-table">
             <tr>
-                <!-- LINKER DRAAITAFEL -->
-                <td align="center">
-                    <h2>💿 PLAAT A</h2>
-                    <p><b>Liedje:</b> Gare Glitch AI Hardbass</p>
+                <!-- LINKER DRAAITAFEL (PLAAT A) -->
+                <td class="deck" align="center" width="35%">
+                    <h2><span id="lightA" class="status-light"></span> 💿 PLAAT A</h2>
+                    <p style="color: lime; font-size: 12px;"><b>Track:</b> Memory_Leak.mp3</p>
 
-                    <!-- De "Draaitafel" knop -->
-                    <button onclick="startAiTrack('plaatA')" style="font-size: 50px; border-radius: 50%; cursor: pointer;">🪩</button>
+                    <!-- Draaitafel Vinyl Icon -->
+                    <div id="discA" class="record" onclick="togglePlay('A')">🪩</div>
                     <br><br>
 
-                    <label>Volume van de bas:</label><br>
-                    <input type="range" min="0" max="100" value="99" oninput="changeVolume('plaatA', this.value)"><br><br>
+                    <label for="volA">Volume A:</label><br>
+                    <input type="range" id="volA" min="0" max="1" step="0.01" value="0.8" oninput="updateVolumes()"><br>
+                    <small id="volA-val">80%</small><br><br>
 
-                    <button onclick="startAiTrack('plaatA')">▶ START AI BEAT</button>
-                    <button onclick="stopTrack('plaatA')">⏹ STOP</button>
+                    <label for="pitchA">Snelheid / Pitch A:</label><br>
+                    <input type="range" id="pitchA" min="0.5" max="2" step="0.05" value="1" oninput="updatePitch('A')"><br>
+                    <small id="pitchA-val">1.0x</small><br><br>
+
+                    <button onclick="playTrack('A')">▶ PLAY</button>
+                    <button onclick="pauseTrack('A')">⏸ PAUZE</button>
+                    <button onclick="stopTrack('A')">⏹ STOP</button>
                 </td>
 
                 <!-- DE CROSSFADER MIDDEN -->
-                <td align="center" bgcolor="darkgreen">
-                    <h3>🎛️ CROSSFADER</h3>
+                <td class="mixer" align="center" width="30%">
+                    <h3>🎛️ MIXER</h3>
                     <br>
-                    <label>👈 A | B 👉</label><br>
-                    <input type="range" min="0" max="100" value="50" oninput="crossfade(this.value)"><br><br>
-                    <button onclick="playAirhorn()" style="font-size: 20px; cursor: pointer;">💥 AIRHORN TOETER 💥</button>
+                    <label><b>CROSSFADER</b></label><br>
+                    <small>👈 PLAAT A | PLAAT B 👉</small><br><br>
+                    <input type="range" id="crossfader" min="0" max="1" step="0.01" value="0.5" oninput="updateVolumes()"><br><br>
+
+                    <button class="btn-airhorn" onclick="playAirhorn()">💥 AIRHORN 💥</button>
+                    <br><br>
+                    <button onclick="scratchEffect()" style="background: cyan;">🎚️ SCRATCH!</button>
                 </td>
 
-                <!-- RECHTER DRAAITAFEL -->
-                <td align="center">
-                    <h2>💿 PLAAT B</h2>
-                    <p><b>Liedje:</b> Cybernetic AI Cosmos</p>
+                <!-- RECHTER DRAAITAFEL (PLAAT B) -->
+                <td class="deck" align="center" width="35%">
+                    <h2><span id="lightB" class="status-light"></span> 💿 PLAAT B</h2>
+                    <p style="color: cyan; font-size: 12px;"><b>Track:</b> Memory_Leak.mp3 (Remix)</p>
 
-                    <!-- De "Draaitafel" knop -->
-                    <button onclick="startAiTrack('plaatB')" style="font-size: 50px; border-radius: 50%; cursor: pointer;">💿</button>
+                    <!-- Draaitafel Vinyl Icon -->
+                    <div id="discB" class="record" onclick="togglePlay('B')">💿</div>
                     <br><br>
 
-                    <label>Snelheid van de DJ:</label><br>
-                    <input type="range" min="50" max="150" value="100" oninput="changeSpeed('plaatB', this.value)"><br><br>
+                    <label for="volB">Volume B:</label><br>
+                    <input type="range" id="volB" min="0" max="1" step="0.01" value="0.8" oninput="updateVolumes()"><br>
+                    <small id="volB-val">80%</small><br><br>
 
-                    <button onclick="startAiTrack('plaatB')">▶ START AI BEAT</button>
-                    <button onclick="stopTrack('plaatB')">⏹ STOP</button>
+                    <label for="pitchB">Snelheid / Pitch B:</label><br>
+                    <input type="range" id="pitchB" min="0.5" max="2" step="0.05" value="1.2" oninput="updatePitch('B')"><br>
+                    <small id="pitchB-val">1.2x</small><br><br>
+
+                    <button onclick="playTrack('B')">▶ PLAY</button>
+                    <button onclick="pauseTrack('B')">⏸ PAUZE</button>
+                    <button onclick="stopTrack('B')">⏹ STOP</button>
                 </td>
             </tr>
         </table>
 
         <br><br>
-        <fieldset style="width: 300px;">
-            <legend><b>🔥 Extra DJ Knoppen</b></legend>
-            <input type="checkbox"> Gooi taart naar publiek<br>
-            <input type="checkbox"> Doe alsof je druk bezig bent<br>
-            <input type="checkbox"> Schreeuw "EVERYBODY JUMP"<br><br>
-            <button onclick="dropTheBeat()" style="background-color: red; color: white; padding: 10px; cursor: pointer;">DROPP DE BEAT (CRASH DE COMPUTER)</button>
+
+        <!-- EXTRA DJ OPTIONS & DROP THE BEAT -->
+        <fieldset>
+            <legend><b>🔥 DJ CONTROL CENTER 🔥</b></legend>
+            <input type="checkbox" id="chk1"> <label for="chk1">Gooi taart naar publiek 🎂</label><br>
+            <input type="checkbox" id="chk2" checked> <label for="chk2">Doe alsof je heel druk bezig bent 🎧</label><br>
+            <input type="checkbox" id="chk3"> <label for="chk3">Schreeuw "EVERYBODY JUMP!" 🗣️</label><br><br>
+            
+            <button class="btn-drop" onclick="dropTheBeat()">💣 DROP DE BEAT 💣</button>
         </fieldset>
 
-        <p><small><i>Disclaimer: De muziek hierboven is gegenereerd door een compleet gestoord AI-brein. Klik op de platen om te starten!</i></small></p>
+        <p><small><i>Audio Source: https://ikhouvankaasq.github.io/Memory_Leak.mp3</i></small></p>
     </center>
 
-    <!-- HIER ZITTEN DE AI AUDIO ELEMENTEN VERSTOPT -->
-    <!-- (De muziek staat klaar om direct afgespeeld te worden via de chat/player hierboven!) -->
+    <!-- VERSTOPTE AUDIO ELEMENTEN -->
+    <audio id="audioA" src="https://ikhouvankaasq.github.io/Memory_Leak.mp3" loop preload="auto"></audio>
+    <audio id="audioB" src="https://ikhouvankaasq.github.io/Memory_Leak.mp3" loop preload="auto"></audio>
 
     <script>
-        // Web Audio API nep-geluiden generator voor de airhorn & knoppen
+        // Audio elementen ophalen
+        const audioA = document.getElementById('audioA');
+        const audioB = document.getElementById('audioB');
+
+        // Web Audio Context voor sound-effects (Airhorn & Beat Drop Boom)
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // Live volumeberekening met Crossfader & afzonderlijke volume sliders
+        function updateVolumes() {
+            const volA = parseFloat(document.getElementById('volA').value);
+            const volB = parseFloat(document.getElementById('volB').value);
+            const xFade = parseFloat(document.getElementById('crossfader').value);
+
+            // Equal power / linear crossfade mix:
+            // als xFade = 0 -> A is 100%, B is 0%
+            // als xFade = 1 -> A is 0%, B is 100%
+            const gainA = Math.cos(xFade * 0.5 * Math.PI);
+            const gainB = Math.sin(xFade * 0.5 * Math.PI);
+
+            audioA.volume = Math.min(1, Math.max(0, volA * gainA));
+            audioB.volume = Math.min(1, Math.max(0, volB * gainB));
+
+            document.getElementById('volA-val').innerText = Math.round(volA * 100) + '%';
+            document.getElementById('volB-val').innerText = Math.round(volB * 100) + '%';
+        }
+
+        // Pitch / Afspeelsnelheid aanpassen
+        function updatePitch(deck) {
+            if (deck === 'A') {
+                const val = parseFloat(document.getElementById('pitchA').value);
+                audioA.playbackRate = val;
+                document.getElementById('pitchA-val').innerText = val.toFixed(2) + 'x';
+            } else {
+                const val = parseFloat(document.getElementById('pitchB').value);
+                audioB.playbackRate = val;
+                document.getElementById('pitchB-val').innerText = val.toFixed(2) + 'x';
+            }
+        }
+
+        // Afspelen / Pauzeren / Stoppen
+        function playTrack(deck) {
+            getAudioContext();
+            updateVolumes();
+            if (deck === 'A') {
+                audioA.play().then(() => {
+                    document.getElementById('discA').classList.add('spinning');
+                    document.getElementById('lightA').classList.add('active');
+                }).catch(e => console.log("Audio A play error:", e));
+            } else {
+                audioB.play().then(() => {
+                    document.getElementById('discB').classList.add('spinning');
+                    document.getElementById('lightB').classList.add('active');
+                }).catch(e => console.log("Audio B play error:", e));
+            }
+        }
+
+        function pauseTrack(deck) {
+            if (deck === 'A') {
+                audioA.pause();
+                document.getElementById('discA').classList.remove('spinning');
+                document.getElementById('lightA').classList.remove('active');
+            } else {
+                audioB.pause();
+                document.getElementById('discB').classList.remove('spinning');
+                document.getElementById('lightB').classList.remove('active');
+            }
+        }
+
+        function stopTrack(deck) {
+            pauseTrack(deck);
+            if (deck === 'A') {
+                audioA.currentTime = 0;
+            } else {
+                audioB.currentTime = 0;
+            }
+        }
+
+        function togglePlay(deck) {
+            const audio = deck === 'A' ? audioA : audioB;
+            if (audio.paused) {
+                playTrack(deck);
+            } else {
+                pauseTrack(deck);
+            }
+        }
+
+        // Scratch Sound Effect Simulator
+        function scratchEffect() {
+            getAudioContext();
+            const activeAudio = !audioA.paused ? audioA : (!audioB.paused ? audioB : null);
+            if (activeAudio) {
+                const origTime = activeAudio.currentTime;
+                activeAudio.currentTime = Math.max(0, origTime - 0.4);
+                activeAudio.playbackRate = 2.0;
+                setTimeout(() => {
+                    updatePitch('A');
+                    updatePitch('B');
+                }, 150);
+            } else {
+                playAirhorn();
+            }
+        }
+
+        // Synthesizer Airhorn met Web Audio API
         function playAirhorn() {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const ctx = getAudioContext();
+            
+            const now = ctx.currentTime;
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
+
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(440, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.2);
-            gain.gain.setValueAtTime(0.3, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+            
+            // Airhorn pitch slide (freq stijging en daling)
+            osc.frequency.setValueAtTime(466.16, now); // Bb4
+            osc.frequency.setValueAtTime(466.16, now + 0.08);
+            osc.frequency.setValueAtTime(622.25, now + 0.1); // Eb5
+            osc.frequency.setValueAtTime(466.16, now + 0.25);
+
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
             osc.connect(gain);
             gain.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.3);
-            alert("BZZZZT! AIRHORN!");
+
+            osc.start(now);
+            osc.stop(now + 0.4);
         }
 
-        function startAiTrack(plaat) {
-            alert("De AI is gestart met draaien op " + plaat + "! (Luister hierboven in de chat naar het gegenereerde meesterwerk)");
-        }
-
-        function stopTrack(plaat) {
-            alert(plaat + " is gestopt. Stilte...");
-        }
-
-        function changeVolume(plaat, val) {
-            console.log(plaat + " volume gezet op: " + val);
-        }
-
-        function changeSpeed(plaat, val) {
-            console.log(plaat + " snelheid gezet op: " + val + "%");
-        }
-
-        function crossfade(val) {
-            console.log("Crossfader staat op: " + val);
-        }
-
+        // DROP DE BEAT Effect
         function dropTheBeat() {
-            alert("BOOOOOOM! 💥 De beat is gedropt! (En je pc doet het nog steeds).");
-            document.body.bgColor = "red";
-            setTimeout(() => { document.body.bgColor = "purple"; }, 500);
+            const ctx = getAudioContext();
+
+            // 1. Zorg dat beide platen draaien & pitch omhoog schiet
+            playTrack('A');
+            playTrack('B');
+            audioA.playbackRate = 1.5;
+            audioB.playbackRate = 1.5;
+
+            // 2. Synthesize een dikke sub-bass boom
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(160, now);
+            osc.frequency.exponentialRampToValueAtTime(30, now + 0.8);
+
+            gain.gain.setValueAtTime(0.8, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.8);
+
+            // 3. Strobe / Flits effect op de pagina
+            let count = 0;
+            const interval = setInterval(() => {
+                document.body.style.backgroundColor = count % 2 === 0 ? 'red' : 'yellow';
+                document.body.style.color = count % 2 === 0 ? 'yellow' : 'black';
+                count++;
+                if (count > 10) {
+                    clearInterval(interval);
+                    document.body.style.backgroundColor = 'purple';
+                    document.body.style.color = 'yellow';
+                    updatePitch('A');
+                    updatePitch('B');
+                }
+            }, 80);
         }
+
+        // Initiele instellingen bij laden
+        window.onload = function() {
+            updateVolumes();
+            updatePitch('A');
+            updatePitch('B');
+        };
     </script>
 </body>
 </html>
+```
+
+### Wat kan dit deck nu echt?
+1. **Échte audio-ondersteuning**: Zowel Plaat A als Plaat B spelen direct jouw nummer `Memory_Leak.mp3` af.
+2. **Volledig werkende sliders**:
+   - **Volume sliders**: Pas het niveau per deck aan.
+   - **Crossfader**: Verschuif de fader om naadloos van Plaat A naar Plaat B over te gaan.
+   - **Pitch / Snelheid**: Maak je nummers sneller, langzamer of lekker vervormd (van 0.5x tot 2.0x).
+3. **Visuele feedback**:
+   - De platen (🪩 en 💿) beginnen **echt te draaien** zodra de muziek start.
+   - Er brandt een groen DJ-lampje per actieve deck.
+4. **Gare Synthesizer Geluidseffecten**:
+   - **Airhorn**: Gegenereerd via Web Audio API voor die authentieke zaal-toeter.
+   - **Scratch**: Spoelt de audio snel even terug met pitch-change.
+   - **DROP DE BEAT**: Een zware bas-hit met een voorpagina stroboscoop-flits!
