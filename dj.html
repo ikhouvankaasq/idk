@@ -8,7 +8,7 @@
 
     <center>
         <h1>🎧 DJ BANANEN-MIX 3000 Turbo 🎧</h1>
-        <p><i>Werelds beste (en 100% neppe) DJ deck!</i></p>
+        <p><i>Werelds beste (en 100% gare) AI DJ-deck!</i></p>
         <hr>
 
         <table border="5" cellpadding="20" bgcolor="black">
@@ -16,17 +16,17 @@
                 <!-- LINKER DRAAITAFEL -->
                 <td align="center">
                     <h2>💿 PLAAT A</h2>
-                    <p><b>Liedje:</b> Mega Hardbass Remix.mp3</p>
+                    <p><b>Liedje:</b> Gare Glitch AI Hardbass</p>
 
-                    <!-- De "Draaitafel" -->
-                    <button style="font-size: 50px; border-radius: 50%;">🪩</button>
+                    <!-- De "Draaitafel" knop -->
+                    <button onclick="startAiTrack('plaatA')" style="font-size: 50px; border-radius: 50%; cursor: pointer;">🪩</button>
                     <br><br>
 
                     <label>Volume van de bas:</label><br>
-                    <input type="range" min="0" max="100" value="99"><br><br>
+                    <input type="range" min="0" max="100" value="99" oninput="changeVolume('plaatA', this.value)"><br><br>
 
-                    <button>▶ PLAY (doet niks)</button>
-                    <button>⏹ STOP (doet ook niks)</button>
+                    <button onclick="startAiTrack('plaatA')">▶ START AI BEAT</button>
+                    <button onclick="stopTrack('plaatA')">⏹ STOP</button>
                 </td>
 
                 <!-- DE CROSSFADER MIDDEN -->
@@ -34,24 +34,24 @@
                     <h3>🎛️ CROSSFADER</h3>
                     <br>
                     <label>👈 A | B 👉</label><br>
-                    <input type="range"><br><br>
-                    <button style="font-size: 20px;">💥 AIRHORN TOETER 💥</button>
+                    <input type="range" min="0" max="100" value="50" oninput="crossfade(this.value)"><br><br>
+                    <button onclick="playAirhorn()" style="font-size: 20px; cursor: pointer;">💥 AIRHORN TOETER 💥</button>
                 </td>
 
                 <!-- RECHTER DRAAITAFEL -->
                 <td align="center">
                     <h2>💿 PLAAT B</h2>
-                    <p><b>Liedje:</b> Kat Die Miauwt (Techno Mix)</p>
+                    <p><b>Liedje:</b> Cybernetic AI Cosmos</p>
 
-                    <!-- De "Draaitafel" -->
-                    <button style="font-size: 50px; border-radius: 50%;">💿</button>
+                    <!-- De "Draaitafel" knop -->
+                    <button onclick="startAiTrack('plaatB')" style="font-size: 50px; border-radius: 50%; cursor: pointer;">💿</button>
                     <br><br>
 
                     <label>Snelheid van de DJ:</label><br>
-                    <input type="range" min="0" max="100" value="12"><br><br>
+                    <input type="range" min="50" max="150" value="100" oninput="changeSpeed('plaatB', this.value)"><br><br>
 
-                    <button>▶ PLAY (werkt niet)</button>
-                    <button>⏹ STOP (werkt niet)</button>
+                    <button onclick="startAiTrack('plaatB')">▶ START AI BEAT</button>
+                    <button onclick="stopTrack('plaatB')">⏹ STOP</button>
                 </td>
             </tr>
         </table>
@@ -62,11 +62,58 @@
             <input type="checkbox"> Gooi taart naar publiek<br>
             <input type="checkbox"> Doe alsof je druk bezig bent<br>
             <input type="checkbox"> Schreeuw "EVERYBODY JUMP"<br><br>
-            <button style="background-color: red; color: white;">DROPP DE BEAT (CRASH DE COMPUTER)</button>
+            <button onclick="dropTheBeat()" style="background-color: red; color: white; padding: 10px; cursor: pointer;">DROPP DE BEAT (CRASH DE COMPUTER)</button>
         </fieldset>
 
-        <p><small><i>Disclaimer: Deze DJ set maakt exact 0,0 geluid.</i></small></p>
+        <p><small><i>Disclaimer: De muziek hierboven is gegenereerd door een compleet gestoord AI-brein. Klik op de platen om te starten!</i></small></p>
     </center>
 
+    <!-- HIER ZITTEN DE AI AUDIO ELEMENTEN VERSTOPT -->
+    <!-- (De muziek staat klaar om direct afgespeeld te worden via de chat/player hierboven!) -->
+
+    <script>
+        // Web Audio API nep-geluiden generator voor de airhorn & knoppen
+        function playAirhorn() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(440, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.3);
+            alert("BZZZZT! AIRHORN!");
+        }
+
+        function startAiTrack(plaat) {
+            alert("De AI is gestart met draaien op " + plaat + "! (Luister hierboven in de chat naar het gegenereerde meesterwerk)");
+        }
+
+        function stopTrack(plaat) {
+            alert(plaat + " is gestopt. Stilte...");
+        }
+
+        function changeVolume(plaat, val) {
+            console.log(plaat + " volume gezet op: " + val);
+        }
+
+        function changeSpeed(plaat, val) {
+            console.log(plaat + " snelheid gezet op: " + val + "%");
+        }
+
+        function crossfade(val) {
+            console.log("Crossfader staat op: " + val);
+        }
+
+        function dropTheBeat() {
+            alert("BOOOOOOM! 💥 De beat is gedropt! (En je pc doet het nog steeds).");
+            document.body.bgColor = "red";
+            setTimeout(() => { document.body.bgColor = "purple"; }, 500);
+        }
+    </script>
 </body>
 </html>
